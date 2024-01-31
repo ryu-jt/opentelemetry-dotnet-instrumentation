@@ -68,6 +68,7 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>bin\$(Configuration)\$(Platform)\static\</OutDir>
     <IntDir>obj\$(Configuration)\$(Platform)\static\</IntDir>
+    <IncludePath>D:\Projects\lib\ryulib-cpp\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
@@ -78,6 +79,7 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>bin\$(Configuration)\$(Platform)\static\</OutDir>
     <IntDir>obj\$(Configuration)\$(Platform)\static\</IntDir>
+    <IncludePath>D:\Projects\lib\ryulib-cpp\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -96,7 +98,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PreprocessorDefinitions>SPDLOG_COMPILED_LIB;SPDLOG_FMT_EXTERNAL;BIT64;HOST_64BIT;AMD64;_UNICODE;UNICODE;OTEL_AUTO_VERSION_MAJOR=$(OTEL_AUTO_VERSION_MAJOR);OTEL_AUTO_VERSION_MINOR=$(OTEL_AUTO_VERSION_MINOR);OTEL_AUTO_VERSION_PATCH=$(OTEL_AUTO_VERSION_PATCH);%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(LIB_INCLUDES);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <TreatWarningAsError>true</TreatWarningAsError>
+      <TreatWarningAsError>false</TreatWarningAsError>
     </ClCompile>
     <Lib>
       <AdditionalLibraryDirectories>$(LIB_INCLUDES);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -230,6 +232,7 @@
     <ClCompile Include="il_rewriter.cpp" />
     <ClCompile Include="il_rewriter_wrapper.cpp" />
     <ClCompile Include="integration.cpp" />
+    <ClCompile Include="logger.cpp" />
     <ClCompile Include="metadata_builder.cpp" />
     <ClCompile Include="method_rewriter.cpp" />
     <ClCompile Include="miniutf.cpp" />

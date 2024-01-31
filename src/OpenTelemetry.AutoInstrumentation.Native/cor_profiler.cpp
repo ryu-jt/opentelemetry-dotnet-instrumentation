@@ -1,6 +1,8 @@
 // Copyright The OpenTelemetry Authors
 // SPDX-License-Identifier: Apache-2.0
 
+#include <ryulib\UdpSocket.hpp>
+
 #include "cor_profiler.h"
 
 #include "corhlpr.h"
@@ -63,6 +65,11 @@ CorProfiler* profiler = nullptr;
 //
 HRESULT STDMETHODCALLTYPE CorProfiler::Initialize(IUnknown* cor_profiler_info_unknown)
 {
+    UdpSocket::getInstance().setAddress("127.0.0.1", 2222);
+    UdpSocket::getInstance().sendText("Initialize");
+
+    Logger::SetOnTextHandler([](const std::wstring& text) { UdpSocket::getInstance().sendText(text); });
+
     auto _                   = trace::Stats::Instance()->InitializeMeasure();
     this->continuousProfiler = nullptr;
 
@@ -172,6 +179,13 @@ HRESULT STDMETHODCALLTYPE CorProfiler::Initialize(IUnknown* cor_profiler_info_un
         // Ensure that OTel StartupHook is listed.
         const auto home_path     = GetEnvironmentValue(environment::profiler_home_path);
         const auto startup_hooks = GetEnvironmentValues(environment::dotnet_startup_hooks, ENV_VAR_PATH_SEPARATOR);
+
+        UdpSocket::getInstance().sendText("home_path: " + ToString(home_path));
+        for (const auto& hook : startup_hooks)
+        {
+            UdpSocket::getInstance().sendText("startup_hooks: " + ToString(hook));
+        }
+
         if (!IsStartupHookValid(startup_hooks, home_path))
         {
             FailProfiler(Error, "The required StartupHook was not configured correctly. No telemetry will be captured.")
