@@ -12,14 +12,6 @@ internal static class DelayedInitialization
 {
     internal static class Traces
     {
-#if NETFRAMEWORK
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        public static void AddAspNet(LazyInstrumentationLoader lazyInstrumentationLoader, PluginManager pluginManager)
-        {
-            new AspNetInitializer(lazyInstrumentationLoader, pluginManager);
-        }
-#endif
-
 #if NET6_0_OR_GREATER
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static void AddAspNetCore(LazyInstrumentationLoader lazyInstrumentationLoader, PluginManager pluginManager)
@@ -62,12 +54,6 @@ internal static class DelayedInitialization
 #endif
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static void AddWcf(LazyInstrumentationLoader lazyInstrumentationLoader, PluginManager pluginManager)
-        {
-            lazyInstrumentationLoader.Add(new WcfInitializer(pluginManager));
-        }
-
-        [MethodImpl(MethodImplOptions.NoInlining)]
         public static void AddQuartz(LazyInstrumentationLoader lazyInstrumentationLoader, PluginManager pluginManager)
         {
             lazyInstrumentationLoader.Add(new QuartzInitializer(pluginManager));
@@ -76,14 +62,6 @@ internal static class DelayedInitialization
 
     internal static class Metrics
     {
-#if NETFRAMEWORK
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        public static void AddAspNet(LazyInstrumentationLoader lazyInstrumentationLoader, PluginManager pluginManager)
-        {
-            new AspNetMetricsInitializer(lazyInstrumentationLoader, pluginManager);
-        }
-#endif
-
 #if NET6_0_OR_GREATER
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static void AddAspNetCore(LazyInstrumentationLoader lazyInstrumentationLoader)

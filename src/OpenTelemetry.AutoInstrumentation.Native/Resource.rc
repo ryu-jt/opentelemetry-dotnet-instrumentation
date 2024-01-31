@@ -25,18 +25,18 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE 
+1 TEXTINCLUDE
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE 
+2 TEXTINCLUDE
 BEGIN
     "#include ""winres.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE 
+3 TEXTINCLUDE
 BEGIN
     "\r\n"
     "\0"
@@ -97,7 +97,7 @@ END
 // ASSEMBLY
 //
 
-NETFRAMEWORK_MANAGED_ENTRYPOINT_DLL ASSEMBLY                "..\\bin\\ProfilerResources\\net462\\OpenTelemetry.AutoInstrumentation.Loader.dll"
+NETFRAMEWORK_MANAGED_ENTRYPOINT_DLL ASSEMBLY                "..\\bin\\ProfilerResources\\net6.0\\OpenTelemetry.AutoInstrumentation.Loader.dll"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -105,7 +105,7 @@ NETFRAMEWORK_MANAGED_ENTRYPOINT_DLL ASSEMBLY                "..\\bin\\ProfilerRe
 // SYMBOLS
 //
 
-NETFRAMEWORK_MANAGED_ENTRYPOINT_SYMBOLS SYMBOLS                 "..\\bin\\ProfilerResources\\net462\\OpenTelemetry.AutoInstrumentation.Loader.pdb"
+NETFRAMEWORK_MANAGED_ENTRYPOINT_SYMBOLS SYMBOLS                 "..\\bin\\ProfilerResources\\net6.0\\OpenTelemetry.AutoInstrumentation.Loader.pdb"
 
 #endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////

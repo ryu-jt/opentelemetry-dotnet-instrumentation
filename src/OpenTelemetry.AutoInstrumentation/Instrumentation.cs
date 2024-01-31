@@ -61,22 +61,6 @@ internal static class Instrumentation
             return;
         }
 
-#if NETFRAMEWORK
-        try
-        {
-            // On .NET Framework only, initialize env vars from app.config/web.config
-            // this does not override settings which where already set via env vars.
-            // We are doing so as the OTel .NET SDK only supports the env vars and we want to be
-            // be able to set them via app.config/web.config.
-            EnvironmentInitializer.Initialize(System.Configuration.ConfigurationManager.AppSettings);
-        }
-        catch (Exception ex)
-        {
-            Logger.Error(ex, "Failed to initialize from AppSettings.");
-            throw;
-        }
-#endif
-
         try
         {
             // Initialize SdkSelfDiagnosticsEventListener to create an EventListener for the OpenTelemetry SDK
@@ -249,11 +233,6 @@ internal static class Instrumentation
         {
             switch (instrumentation)
             {
-#if NETFRAMEWORK
-                case MetricInstrumentation.AspNet:
-                    DelayedInitialization.Metrics.AddAspNet(lazyInstrumentationLoader, pluginManager);
-                    break;
-#endif
 #if NET6_0_OR_GREATER
                 case MetricInstrumentation.AspNetCore:
                     DelayedInitialization.Metrics.AddAspNetCore(lazyInstrumentationLoader);
@@ -290,14 +269,6 @@ internal static class Instrumentation
         {
             switch (instrumentation)
             {
-#if NETFRAMEWORK
-                case TracerInstrumentation.AspNet:
-                    DelayedInitialization.Traces.AddAspNet(lazyInstrumentationLoader, pluginManager);
-                    break;
-                case TracerInstrumentation.WcfService:
-                    AddWcfIfNeeded(lazyInstrumentationLoader, pluginManager, ref wcfInstrumentationAdded);
-                    break;
-#endif
                 case TracerInstrumentation.HttpClient:
                     DelayedInitialization.Traces.AddHttpClient(lazyInstrumentationLoader, pluginManager);
                     break;
@@ -309,9 +280,6 @@ internal static class Instrumentation
                     break;
                 case TracerInstrumentation.Quartz:
                     DelayedInitialization.Traces.AddQuartz(lazyInstrumentationLoader, pluginManager);
-                    break;
-                case TracerInstrumentation.WcfClient:
-                    AddWcfIfNeeded(lazyInstrumentationLoader, pluginManager, ref wcfInstrumentationAdded);
                     break;
 #if NET6_0_OR_GREATER
                 case TracerInstrumentation.AspNetCore:
@@ -356,20 +324,6 @@ internal static class Instrumentation
                     break;
             }
         }
-    }
-
-    private static void AddWcfIfNeeded(
-        LazyInstrumentationLoader lazyInstrumentationLoader,
-        PluginManager pluginManager,
-        ref bool wcfInstrumentationAdded)
-    {
-        if (wcfInstrumentationAdded)
-        {
-            return;
-        }
-
-        DelayedInitialization.Traces.AddWcf(lazyInstrumentationLoader, pluginManager);
-        wcfInstrumentationAdded = true;
     }
 
     private static void OnExit(object? sender, EventArgs e)

@@ -21,6 +21,8 @@ internal partial class Loader
     /// </summary>
     static Loader()
     {
+        DebugLogs.Instance.Log("Loader begin");
+
         ManagedProfilerDirectory = ResolveManagedProfilerDirectory();
 
         try
@@ -29,6 +31,7 @@ internal partial class Loader
         }
         catch (Exception ex)
         {
+            DebugLogs.Instance.Log($"Unable to register a callback to the CurrentDomain.AssemblyResolve event. {ex}");
             Logger.Error(ex, "Unable to register a callback to the CurrentDomain.AssemblyResolve event.");
         }
 
@@ -37,6 +40,7 @@ internal partial class Loader
 
     private static void TryLoadManagedAssembly()
     {
+        DebugLogs.Instance.Log("Managed Loader TryLoadManagedAssembly()");
         Logger.Information("Managed Loader TryLoadManagedAssembly()");
 
         try
@@ -63,6 +67,7 @@ internal partial class Loader
         }
         catch (Exception ex)
         {
+            DebugLogs.Instance.Log($"Error when loading managed assemblies. {ManagedProfilerDirectory}, {ex}");
             Logger.Error(ex, "Error when loading managed assemblies. {0}", ex.Message);
             throw;
         }
@@ -76,6 +81,7 @@ internal partial class Loader
         }
         catch (Exception ex)
         {
+            DebugLogs.Instance.Log($"Error while loading environment variable {key}. {ex}");
             Logger.Error(ex, "Error while loading environment variable {0}", key);
         }
 

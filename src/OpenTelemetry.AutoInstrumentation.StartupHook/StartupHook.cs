@@ -24,6 +24,7 @@ internal class StartupHook
     {
         bool.TryParse(Environment.GetEnvironmentVariable(ConfigurationKeys.FailFast), out var failFast);
 
+        string loaderFilePath = string.Empty;
         try
         {
             LoaderAssemblyLocation = GetLoaderAssemblyLocation();
@@ -34,11 +35,12 @@ internal class StartupHook
                 throw new Exception("Rule Engine Failure: One or more rules failed validation. Automatic Instrumentation won't be loaded.");
             }
 
+            DebugLogs.Instance.Log("Initialization.");
             Logger.Information("Initialization.");
 
             // Creating an instance of OpenTelemetry.AutoInstrumentation.Loader.Startup
             // will initialize Instrumentation through its static constructor.
-            var loaderFilePath = Path.Combine(LoaderAssemblyLocation, "OpenTelemetry.AutoInstrumentation.Loader.dll");
+            loaderFilePath = Path.Combine(LoaderAssemblyLocation, "OpenTelemetry.AutoInstrumentation.Loader.dll");
             var loaderAssembly = Assembly.LoadFrom(loaderFilePath);
             var loaderInstance = loaderAssembly.CreateInstance("OpenTelemetry.AutoInstrumentation.Loader.Loader");
             if (loaderInstance is null)
@@ -50,11 +52,13 @@ internal class StartupHook
             }
             else
             {
+                DebugLogs.Instance.Log("StartupHook initialized successfully!");
                 Logger.Information("StartupHook initialized successfully!");
             }
         }
         catch (Exception ex)
         {
+            DebugLogs.Instance.Log($"Error in StartupHook initialization: LoaderFolderLocation: {loaderFilePath}, {ex}");
             Logger.Error(ex, $"Error in StartupHook initialization: LoaderFolderLocation: {LoaderAssemblyLocation}");
             if (failFast)
             {
@@ -81,6 +85,7 @@ internal class StartupHook
         }
         catch (Exception ex)
         {
+            DebugLogs.Instance.Log($"Error getting loader directory location: {ex}");
             Logger.Error($"Error getting loader directory location: {ex}");
             throw;
         }

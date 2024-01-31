@@ -24,10 +24,6 @@ internal static class EnvironmentConfigurationTracerHelper
         {
             _ = enabledInstrumentation switch
             {
-#if NETFRAMEWORK
-                TracerInstrumentation.AspNet => Wrappers.AddAspNetInstrumentation(builder, pluginManager, lazyInstrumentationLoader),
-                TracerInstrumentation.WcfService => AddWcfIfNeeded(builder, pluginManager, lazyInstrumentationLoader, ref wcfInstrumentationAdded),
-#endif
                 TracerInstrumentation.GrpcNetClient => Wrappers.AddGrpcClientInstrumentation(builder, pluginManager, lazyInstrumentationLoader),
                 TracerInstrumentation.HttpClient => Wrappers.AddHttpClientInstrumentation(builder, pluginManager, lazyInstrumentationLoader),
                 TracerInstrumentation.Npgsql => builder.AddSource("Npgsql"),
@@ -39,7 +35,6 @@ internal static class EnvironmentConfigurationTracerHelper
                 TracerInstrumentation.MongoDB => builder.AddSource("MongoDB.Driver.Core.Extensions.DiagnosticSources"),
                 TracerInstrumentation.MySqlConnector => builder.AddSource("MySqlConnector"),
                 TracerInstrumentation.Azure => Wrappers.AddAzureInstrumentation(builder),
-                TracerInstrumentation.WcfClient => AddWcfIfNeeded(builder, pluginManager, lazyInstrumentationLoader, ref wcfInstrumentationAdded),
 #if NET6_0_OR_GREATER
                 TracerInstrumentation.AspNetCore => Wrappers.AddAspNetCoreInstrumentation(builder, pluginManager, lazyInstrumentationLoader),
                 TracerInstrumentation.MassTransit => builder.AddSource("MassTransit"),
@@ -70,23 +65,6 @@ internal static class EnvironmentConfigurationTracerHelper
         }
 
         return builder;
-    }
-
-    private static TracerProviderBuilder AddWcfIfNeeded(
-        TracerProviderBuilder tracerProviderBuilder,
-        PluginManager pluginManager,
-        LazyInstrumentationLoader lazyInstrumentationLoader,
-        ref bool wcfInstrumentationAdded)
-    {
-        if (wcfInstrumentationAdded)
-        {
-            return tracerProviderBuilder;
-        }
-
-        Wrappers.AddWcfInstrumentation(tracerProviderBuilder, pluginManager, lazyInstrumentationLoader);
-        wcfInstrumentationAdded = true;
-
-        return tracerProviderBuilder;
     }
 
     private static TracerProviderBuilder SetSampler(this TracerProviderBuilder builder, TracerSettings settings)
@@ -131,37 +109,16 @@ internal static class EnvironmentConfigurationTracerHelper
         // Instrumentations
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static TracerProviderBuilder AddWcfInstrumentation(TracerProviderBuilder builder, PluginManager pluginManager, LazyInstrumentationLoader lazyInstrumentationLoader)
-        {
-            DelayedInitialization.Traces.AddWcf(lazyInstrumentationLoader, pluginManager);
-
-            return builder.AddSource("OpenTelemetry.Instrumentation.Wcf");
-        }
-
-        [MethodImpl(MethodImplOptions.NoInlining)]
         public static TracerProviderBuilder AddHttpClientInstrumentation(TracerProviderBuilder builder, PluginManager pluginManager, LazyInstrumentationLoader lazyInstrumentationLoader)
         {
             DelayedInitialization.Traces.AddHttpClient(lazyInstrumentationLoader, pluginManager);
 
-#if NETFRAMEWORK
-            builder.AddSource("OpenTelemetry.Instrumentation.Http.HttpWebRequest");
-#else
             builder.AddSource("OpenTelemetry.Instrumentation.Http.HttpClient");
             builder.AddSource("System.Net.Http"); // This works only System.Net.Http >= 7.0.0
             builder.AddLegacySource("System.Net.Http.HttpRequestOut");
-#endif
 
             return builder;
         }
-
-#if NETFRAMEWORK
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        public static TracerProviderBuilder AddAspNetInstrumentation(TracerProviderBuilder builder, PluginManager pluginManager, LazyInstrumentationLoader lazyInstrumentationLoader)
-        {
-            DelayedInitialization.Traces.AddAspNet(lazyInstrumentationLoader, pluginManager);
-            return builder.AddSource(OpenTelemetry.Instrumentation.AspNet.TelemetryHttpModule.AspNetSourceName);
-        }
-#endif
 
 #if NET6_0_OR_GREATER
         [MethodImpl(MethodImplOptions.NoInlining)]
