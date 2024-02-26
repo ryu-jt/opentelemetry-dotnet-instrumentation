@@ -4,14 +4,11 @@
 using System.Diagnostics;
 using System.Reflection;
 using System.Text.Json;
-using OpenTelemetry.AutoInstrumentation.Logging;
 
 namespace OpenTelemetry.AutoInstrumentation.RulesEngine;
 
 internal class AssemblyFileVersionRule : Rule
 {
-    private static readonly IOtelLogger Logger = OtelLogging.GetLogger("StartupHook");
-
     public AssemblyFileVersionRule()
     {
         Name = "Assembly File Version Validator";
@@ -32,7 +29,7 @@ internal class AssemblyFileVersionRule : Rule
 
             if (referencedAssemblies == null)
             {
-                Logger.Warning($"Rule Engine: Could not get referenced assembly (GetReferencedAssemblies()) from an application. Skipping rule evaluation.");
+                Logger.Instance.Warning($"Rule Engine: Could not get referenced assembly (GetReferencedAssemblies()) from an application. Skipping rule evaluation.");
                 return result;
             }
 
@@ -50,11 +47,11 @@ internal class AssemblyFileVersionRule : Rule
                     if (appInstrumentationFileVersion < autoInstrumentationFileVersion)
                     {
                         result = false;
-                        Logger.Error($"Rule Engine: Application has direct or indirect reference to older version of assembly {ruleFileInfo.FileName} - {ruleFileInfo.FileVersion}.");
+                        Logger.Instance.Error($"Rule Engine: Application has direct or indirect reference to older version of assembly {ruleFileInfo.FileName} - {ruleFileInfo.FileVersion}.");
                     }
                     else
                     {
-                        Logger.Information($"Rule Engine: Application has reference to assembly {ruleFileInfo.FileName} and loaded successfully.");
+                        Logger.Instance.Info($"Rule Engine: Application has reference to assembly {ruleFileInfo.FileName} and loaded successfully.");
                     }
                 }
             }
@@ -62,7 +59,7 @@ internal class AssemblyFileVersionRule : Rule
         catch (Exception ex)
         {
             // Exception in rule evaluation should not impact the result of the rule.
-            Logger.Warning($"Rule Engine: Couldn't evaluate assembly reference file version. Exception: {ex}");
+            Logger.Instance.Warning($"Rule Engine: Couldn't evaluate assembly reference file version. Exception: {ex}");
         }
 
         return result;

@@ -1,21 +1,11 @@
-// Copyright The OpenTelemetry Authors
-// SPDX-License-Identifier: Apache-2.0
-
 using OpenTelemetry.AutoInstrumentation.Helpers;
-using OpenTelemetry.AutoInstrumentation.Logging;
 
 using static OpenTelemetry.AutoInstrumentation.Constants.EnvironmentVariables;
 
 namespace OpenTelemetry.AutoInstrumentation.RulesEngine;
 
-/// <summary>
-/// Diagnoses native profiler issues.
-/// Diagnoser only supports .NET (Core) runtime.
-/// </summary>
 internal class NativeProfilerDiagnosticsRule : Rule
 {
-    private static readonly IOtelLogger Logger = OtelLogging.GetLogger("StartupHook");
-
     public NativeProfilerDiagnosticsRule()
     {
         Name = "Native profiler diagnoser";
@@ -27,14 +17,14 @@ internal class NativeProfilerDiagnosticsRule : Rule
         var isProfilerEnabled = EnvironmentHelper.GetEnvironmentVariable(ProfilerEnabledVariable) == "1";
         if (!isProfilerEnabled)
         {
-            Logger.Warning("{0} environment variable is not set to '1'. The CLR Profiler is disabled and no bytecode instrumentations are going to be injected.", ProfilerEnabledVariable);
+            Logger.Instance.Warning($"{ProfilerEnabledVariable} environment variable is not set to '1'. The CLR Profiler is disabled and no bytecode instrumentations are going to be injected.");
             return true;
         }
 
         var profilerId = EnvironmentHelper.GetEnvironmentVariable(ProfilerIdVariable);
         if (profilerId != ProfilerId)
         {
-            Logger.Warning("The CLR profiler is enabled, but a different profiler ID was provided '{0}'.", profilerId);
+            Logger.Instance.Warning($"The CLR profiler is enabled, but a different profiler ID was provided '{profilerId}'." );
 
             // Different native profiler not associated to OTel might be used. We don't want to fail here.
             return true;
@@ -47,12 +37,12 @@ internal class NativeProfilerDiagnosticsRule : Rule
                 return true;
             }
 
-            Logger.Error("IsProfilerAttached returned false, the native log should describe the root cause.");
+            Logger.Instance.Error("IsProfilerAttached returned false, the native log should describe the root cause.");
         }
         catch (Exception ex)
         {
             /* Native profiler is not attached. Continue with diagnosis */
-            Logger.Debug(ex, "Error checking if native profiler is attached.");
+            Logger.Instance.Debug($"Error checking if native profiler is attached. {ex}");
         }
 
         if (Environment.Is64BitProcess)
@@ -79,7 +69,7 @@ internal class NativeProfilerDiagnosticsRule : Rule
             return;
         }
 
-        Logger.Error("CLR profiler path is not defined. Define '{0}' or '{1}'.", ProfilerPathVariable, archPathVariable);
+        Logger.Instance.Error($"CLR profiler path is not defined. Define '{ProfilerPathVariable}' or '{archPathVariable}'.");
     }
 
     private static bool TryPathVariable(string profilerPathVariable, string expectedBitness)
@@ -95,12 +85,12 @@ internal class NativeProfilerDiagnosticsRule : Rule
         if (File.Exists(profilerPath))
         {
             // File is found but profiler is not attaching.
-            Logger.Error("CLR profiler was not correctly loaded into the process. Profiler found at '{0}'. Recheck that {1} process is attaching {1} native profiler via {2}.", new object[] { profilerPath, expectedBitness, profilerPathVariable });
+            Logger.Instance.Error($"CLR profiler was not correctly loaded into the process. Profiler found at '{profilerPath}'.");
         }
         else
         {
             // File not found.
-            Logger.Error("CLR profiler ({0}) is not found at '{1}'. Recheck '{2}'.", expectedBitness, profilerPath, profilerPathVariable);
+            Logger.Instance.Error($"CLR profiler ({expectedBitness}) is not found at '{profilerPath}'. Recheck '{profilerPathVariable}'.");
         }
 
         // Path issue verified. VerifyVariables should not continue.

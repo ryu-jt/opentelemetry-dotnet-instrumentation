@@ -13,6 +13,8 @@ internal static class BeginMethodSlowHandler<TIntegration, TTarget>
 
     static BeginMethodSlowHandler()
     {
+        Logger.Instance.Debug("BeginMethodSlowHandler<TIntegration, TTarget>.cctor()");
+
         try
         {
             DynamicMethod? dynMethod = IntegrationMapper.CreateSlowBeginMethodDelegate(typeof(TIntegration), typeof(TTarget));
@@ -39,6 +41,11 @@ internal static class BeginMethodSlowHandler<TIntegration, TTarget>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static CallTargetState Invoke(TTarget instance, object[] arguments)
     {
-        return new CallTargetState(Activity.Current, _invokeDelegate(instance, arguments));
+        Logger.Instance.Debug("BeginMethodSlowHandler<TIntegration, TTarget>.Invoke()");
+
+        // TODO:
+        //return new CallTargetState(Activity.Current, _invokeDelegate(instance, arguments));
+
+        return new CallTargetState(null, _invokeDelegate(instance, arguments));
     }
 }

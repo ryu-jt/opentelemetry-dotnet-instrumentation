@@ -36,7 +36,7 @@ internal partial class FrameworkDescription
             }
             catch (Exception e)
             {
-                Log.Error(e, "Error getting framework name from RuntimeInformation");
+                Logger.Instance.Error($"Error getting framework name from RuntimeInformation - {e.Message}");
             }
 
             if (RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows))
@@ -58,7 +58,7 @@ internal partial class FrameworkDescription
         }
         catch (Exception ex)
         {
-            Log.Error(ex, "Error getting framework description.");
+            Logger.Instance.Error($"Error getting framework description. - {ex.Message}");
         }
 
         return new FrameworkDescription(
@@ -97,7 +97,7 @@ internal partial class FrameworkDescription
             }
             catch (Exception e)
             {
-                Log.Error(e, "Error getting .NET Core version from assembly path");
+                Logger.Instance.Error($"Error getting .NET Core version from assembly path - {e.Message}");
             }
         }
 

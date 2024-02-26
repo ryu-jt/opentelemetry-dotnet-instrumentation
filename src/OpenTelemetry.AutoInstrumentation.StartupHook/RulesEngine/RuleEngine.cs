@@ -1,14 +1,7 @@
-// Copyright The OpenTelemetry Authors
-// SPDX-License-Identifier: Apache-2.0
-
-using OpenTelemetry.AutoInstrumentation.Logging;
-
 namespace OpenTelemetry.AutoInstrumentation.RulesEngine;
 
 internal class RuleEngine
 {
-    private static readonly IOtelLogger Logger = OtelLogging.GetLogger("StartupHook");
-
     private readonly List<Rule> _mandatoryRules = new()
     {
         new ApplicationInExcludeListRule(),
@@ -43,7 +36,7 @@ internal class RuleEngine
 
         if (bool.TryParse(Environment.GetEnvironmentVariable("OTEL_DOTNET_AUTO_RULE_ENGINE_ENABLED"), out var shouldTrack) && !shouldTrack)
         {
-            Logger.Information($"OTEL_DOTNET_AUTO_RULE_ENGINE_ENABLED is set to false, skipping rule engine validation.");
+            Logger.Instance.Info($"OTEL_DOTNET_AUTO_RULE_ENGINE_ENABLED is set to false, skipping rule engine validation.");
             return result;
         }
 
@@ -65,13 +58,13 @@ internal class RuleEngine
         {
             if (!rule.Evaluate())
             {
-                Logger.Error($"Rule '{rule.Name}' failed: {rule.Description}");
+                Logger.Instance.Error($"Rule '{rule.Name}' failed: {rule.Description}");
                 return false;
             }
         }
         catch (Exception ex)
         {
-            Logger.Warning($"Error evaluating rule '{rule.Name}': {ex.Message}");
+            Logger.Instance.Warning($"Error evaluating rule '{rule.Name}': {ex.Message}");
         }
 
         return true;

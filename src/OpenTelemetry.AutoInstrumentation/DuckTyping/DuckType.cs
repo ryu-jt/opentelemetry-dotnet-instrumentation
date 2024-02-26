@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
-using OpenTelemetry.AutoInstrumentation.Util;
+using OpenTelemetry.AutoInstrumentation.Utils;
 
 namespace OpenTelemetry.AutoInstrumentation.DuckTyping;
 

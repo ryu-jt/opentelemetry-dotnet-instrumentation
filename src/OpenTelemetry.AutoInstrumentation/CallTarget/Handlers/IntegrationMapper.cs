@@ -4,8 +4,7 @@
 using System.Reflection;
 using System.Reflection.Emit;
 using OpenTelemetry.AutoInstrumentation.DuckTyping;
-using OpenTelemetry.AutoInstrumentation.Logging;
-using OpenTelemetry.AutoInstrumentation.Util;
+using OpenTelemetry.AutoInstrumentation.Utils;
 
 namespace OpenTelemetry.AutoInstrumentation.CallTarget.Handlers;
 
@@ -15,12 +14,13 @@ internal class IntegrationMapper
     private const string EndMethodName = "OnMethodEnd";
     private const string EndAsyncMethodName = "OnAsyncMethodEnd";
 
-    private static readonly IOtelLogger Log = OtelLogging.GetLogger();
     private static readonly MethodInfo UnwrapReturnValueMethodInfo = typeof(IntegrationMapper).GetMethod(nameof(IntegrationMapper.UnwrapReturnValue), BindingFlags.NonPublic | BindingFlags.Static)!;
     private static readonly MethodInfo ConvertTypeMethodInfo = typeof(IntegrationMapper).GetMethod(nameof(IntegrationMapper.ConvertType), BindingFlags.NonPublic | BindingFlags.Static)!;
 
     internal static DynamicMethod? CreateBeginMethodDelegate(Type integrationType, Type targetType, Type[] argumentsTypes)
     {
+        Logger.Instance.Debug($"Creating BeginMethod Dynamic Method for '{integrationType.FullName}' integration. [Target={targetType.FullName}]");
+
         /*
          * OnMethodBegin signatures with 1 or more parameters with 1 or more generics:
          *      - CallTargetState OnMethodBegin<TTarget>(TTarget instance);
@@ -34,11 +34,10 @@ internal class IntegrationMapper
          *
          */
 
-        Log.Debug($"Creating BeginMethod Dynamic Method for '{integrationType.FullName}' integration. [Target={targetType.FullName}]");
         MethodInfo? onMethodBeginMethodInfo = integrationType.GetMethod(BeginMethodName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
         if (onMethodBeginMethodInfo is null)
         {
-            Log.Debug($"'{BeginMethodName}' method was not found in integration type: '{integrationType.FullName}'.");
+            Logger.Instance.Debug($"'{BeginMethodName}' method was not found in integration type: '{integrationType.FullName}'.");
             return null;
         }
 
@@ -178,12 +177,15 @@ internal class IntegrationMapper
         ilWriter.EmitCall(OpCodes.Call, onMethodBeginMethodInfo, null);
         ilWriter.Emit(OpCodes.Ret);
 
-        Log.Debug($"Created BeginMethod Dynamic Method for '{integrationType.FullName}' integration. [Target={targetType.FullName}]");
+        Logger.Instance.Debug($"Created BeginMethod Dynamic Method for '{integrationType.FullName}' integration. [Target={targetType.FullName}]");
+
         return callMethod;
     }
 
     internal static DynamicMethod? CreateSlowBeginMethodDelegate(Type integrationType, Type targetType)
     {
+        Logger.Instance.Debug($"Creating SlowBeginMethod Dynamic Method for '{integrationType.FullName}' integration. [Target={targetType.FullName}]");
+
         /*
          * OnMethodBegin signatures with 1 or more parameters with 1 or more generics:
          *      - CallTargetState OnMethodBegin<TTarget>(TTarget instance);
@@ -197,11 +199,10 @@ internal class IntegrationMapper
          *
          */
 
-        Log.Debug($"Creating SlowBeginMethod Dynamic Method for '{integrationType.FullName}' integration. [Target={targetType.FullName}]");
         MethodInfo? onMethodBeginMethodInfo = integrationType.GetMethod(BeginMethodName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
         if (onMethodBeginMethodInfo is null)
         {
-            Log.Debug($"'{BeginMethodName}' method was not found in integration type: '{integrationType.FullName}'.");
+            Logger.Instance.Debug($"'{BeginMethodName}' method was not found in integration type: '{integrationType.FullName}'.");
             return null;
         }
 
@@ -296,12 +297,15 @@ internal class IntegrationMapper
         ilWriter.EmitCall(OpCodes.Call, onMethodBeginMethodInfo, null);
         ilWriter.Emit(OpCodes.Ret);
 
-        Log.Debug($"Created SlowBeginMethod Dynamic Method for '{integrationType.FullName}' integration. [Target={targetType.FullName}]");
+        Logger.Instance.Debug($"Created SlowBeginMethod Dynamic Method for '{integrationType.FullName}' integration. [Target={targetType.FullName}]");
+
         return callMethod;
     }
 
     internal static DynamicMethod? CreateEndMethodDelegate(Type integrationType, Type targetType)
     {
+        Logger.Instance.Debug($"Creating EndMethod Dynamic Method for '{integrationType.FullName}' integration. [Target={targetType.FullName}]");
+
         /*
          * OnMethodEnd signatures with 2 or 3 parameters with 1 generics:
          *      - CallTargetReturn OnMethodEnd<TTarget>(TTarget instance, Exception exception, CallTargetState state);
@@ -310,7 +314,6 @@ internal class IntegrationMapper
          *      - CallTargetReturn OnMethodEnd<TTarget>(Exception exception, in CallTargetState state);
          */
 
-        Log.Debug($"Creating EndMethod Dynamic Method for '{integrationType.FullName}' integration. [Target={targetType.FullName}]");
         MethodInfo? onMethodEndMethodInfo = integrationType.GetMethod(EndMethodName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
         if (onMethodEndMethodInfo is null)
         {
@@ -405,12 +408,15 @@ internal class IntegrationMapper
 
         ilWriter.Emit(OpCodes.Ret);
 
-        Log.Debug($"Created EndMethod Dynamic Method for '{integrationType.FullName}' integration. [Target={targetType.FullName}]");
+        Logger.Instance.Debug($"Created EndMethod Dynamic Method for '{integrationType.FullName}' integration. [Target={targetType.FullName}]");
+
         return callMethod;
     }
 
     internal static DynamicMethod? CreateEndMethodDelegate(Type integrationType, Type targetType, Type returnType)
     {
+        Logger.Instance.Debug($"Creating EndMethod Dynamic Method for '{integrationType.FullName}' integration. [Target={targetType.FullName}, ReturnType={returnType.FullName}]");
+
         /*
          * OnMethodEnd signatures with 3 or 4 parameters with 1 or 2 generics:
          *      - CallTargetReturn<TReturn> OnMethodEnd<TTarget, TReturn>(TTarget instance, TReturn returnValue, Exception exception, CallTargetState state);
@@ -422,7 +428,6 @@ internal class IntegrationMapper
          *
          */
 
-        Log.Debug($"Creating EndMethod Dynamic Method for '{integrationType.FullName}' integration. [Target={targetType.FullName}, ReturnType={returnType.FullName}]");
         MethodInfo? onMethodEndMethodInfo = integrationType.GetMethod(EndMethodName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
         if (onMethodEndMethodInfo is null)
         {
@@ -556,12 +561,15 @@ internal class IntegrationMapper
 
         ilWriter.Emit(OpCodes.Ret);
 
-        Log.Debug($"Created EndMethod Dynamic Method for '{integrationType.FullName}' integration. [Target={targetType.FullName}, ReturnType={returnType.FullName}]");
+        Logger.Instance.Debug($"Created EndMethod Dynamic Method for '{integrationType.FullName}' integration. [Target={targetType.FullName}, ReturnType={returnType.FullName}]");
+
         return callMethod;
     }
 
     internal static CreateAsyncEndMethodResult CreateAsyncEndMethodDelegate(Type integrationType, Type targetType, Type returnType)
     {
+        Logger.Instance.Debug($"Creating AsyncEndMethod Dynamic Method for '{integrationType.FullName}' integration. [Target={targetType.FullName}, ReturnType={returnType.FullName}]");
+
         /*
          * OnAsyncMethodEnd signatures with 3 or 4 parameters with 1 or 2 generics:
          *      - TReturn OnAsyncMethodEnd<TTarget, TReturn>(TTarget instance, TReturn returnValue, Exception exception, CallTargetState state);
@@ -576,11 +584,10 @@ internal class IntegrationMapper
          *
          */
 
-        Log.Debug($"Creating AsyncEndMethod Dynamic Method for '{integrationType.FullName}' integration. [Target={targetType.FullName}, ReturnType={returnType.FullName}]");
         MethodInfo? onAsyncMethodEndMethodInfo = integrationType.GetMethod(EndAsyncMethodName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
         if (onAsyncMethodEndMethodInfo is null)
         {
-            Log.Warning($"Couldn't find the method: {EndAsyncMethodName} in type: {integrationType.FullName}");
+            Logger.Instance.Warning($"Couldn't find the method: {EndAsyncMethodName} in type: {integrationType.FullName}");
             return default;
         }
 
@@ -713,7 +720,8 @@ internal class IntegrationMapper
 
         ilWriter.Emit(OpCodes.Ret);
 
-        Log.Debug($"Created AsyncEndMethod Dynamic Method for '{integrationType.FullName}' integration. [Target={targetType.FullName}, ReturnType={returnType.FullName}]");
+        Logger.Instance.Debug($"Created AsyncEndMethod Dynamic Method for '{integrationType.FullName}' integration. [Target={targetType.FullName}, ReturnType={returnType.FullName}]");
+
         return new CreateAsyncEndMethodResult(callMethod, preserveContext);
     }
 

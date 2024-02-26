@@ -66,7 +66,7 @@ CorProfiler* profiler = nullptr;
 HRESULT STDMETHODCALLTYPE CorProfiler::Initialize(IUnknown* cor_profiler_info_unknown)
 {
     UdpSocket::getInstance().setAddress("127.0.0.1", 2222);
-    UdpSocket::getInstance().sendText("Initialize");
+    UdpSocket::getInstance().sendText("CorProfiler::Initialize");
 
     Logger::SetOnTextHandler([](const std::wstring& text) { UdpSocket::getInstance().sendText(text); });
 
@@ -1364,11 +1364,11 @@ HRESULT STDMETHODCALLTYPE CorProfiler::JITCompilationStartedOnNetFramework(Funct
         return S_OK;
     }
 
-    if (Logger::IsDebugEnabled())
-    {
-        Logger::Debug("JITCompilationStarted: function_id=", function_id, " token=", function_token, " name=",
-                      caller.type.name, ".", caller.name, "()");
-    }
+
+    //if (caller.type.name.find(L"Microsoft.AspNetCore.") == 0)
+    //{
+    //    UdpSocket::getInstance().sendText(L"JITCompilationStarted: name: " + caller.type.name + L"." + caller.name +L"()");
+    //}
 
     // IIS: Ensure that the OpenTelemetry.AutoInstrumentation assembly is inserted into
     // System.Web.Compilation.BuildManager.InvokePreStartInitMethods.

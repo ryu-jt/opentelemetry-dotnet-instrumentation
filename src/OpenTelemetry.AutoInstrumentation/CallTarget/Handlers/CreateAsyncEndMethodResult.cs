@@ -12,6 +12,8 @@ internal readonly struct CreateAsyncEndMethodResult
 
     public CreateAsyncEndMethodResult(DynamicMethod method, bool preserveContext)
     {
+        Logger.Instance.Debug("CreateAsyncEndMethodResult.ctor()");
+
         Method = method;
         PreserveContext = preserveContext;
     }

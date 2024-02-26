@@ -24,10 +24,17 @@ public class InstrumentationDefinitionsGenerator : IIncrementalGenerator
         var instrumentationClasses = context.SyntaxProvider.ForAttributeWithMetadataName(
                 InstrumentMethodAttributeName,
                 (node, _) => node is ClassDeclarationSyntax,
-                GetClassesMarkedByInstrumentMethodAttribute)
-            .Where(static m => m != null);
+                GetClassesMarkedByInstrumentMethodAttribute);
 
-        var instrumentationClassesAsOneCollection = instrumentationClasses.Collect();
+        // 로깅을 위한 임시 처리
+        var instrumentationClassesWithLogging = instrumentationClasses.Select((classInfo, _) =>
+        {
+            return classInfo;
+        });
+
+        var filteredInstrumentationClasses = instrumentationClassesWithLogging.Where(static m => m != null);
+
+        var instrumentationClassesAsOneCollection = filteredInstrumentationClasses.Collect();
 
         context.RegisterSourceOutput(
             instrumentationClassesAsOneCollection,
@@ -134,7 +141,7 @@ public class InstrumentationDefinitionsGenerator : IIncrementalGenerator
 //     compile project.
 
 //     Changes to this file may cause incorrect behavior and will be lost if
-//     the code is regenerated. 
+//     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
 
@@ -153,19 +160,18 @@ internal static partial class InstrumentationDefinitions
             .AppendLine();
 
         const string tracesHeader = @"        // Traces
-        var tracerSettings = Instrumentation.TracerSettings.Value;
-        if (tracerSettings.TracesEnabled)";
-        GenerateInstrumentationForSignal(tracesByIntegrationName, sb, tracesHeader, "tracerSettings.EnabledInstrumentations.Contains(TracerInstrumentation");
+        if (TracerSettings.Instance.TracesEnabled)";
+        GenerateInstrumentationForSignal(tracesByIntegrationName, sb, tracesHeader, "TracerSettings.Instance.EnabledInstrumentations.Contains(TracerInstrumentation");
 
-        const string logsHeader = @"        // Logs
-        var logSettings = Instrumentation.LogSettings.Value;
-        if (logSettings.LogsEnabled)";
-        GenerateInstrumentationForSignal(logsByIntegrationName, sb, logsHeader, "logSettings.EnabledInstrumentations.Contains(LogInstrumentation");
+        //const string logsHeader = @"        // Logs
+        //var logSettings = Instrumentation.LogSettings.Value;
+        //if (logSettings.LogsEnabled)";
+        //GenerateInstrumentationForSignal(logsByIntegrationName, sb, logsHeader, "logSettings.EnabledInstrumentations.Contains(LogInstrumentation");
 
-        const string metricsHeader = @"        // Metrics
-        var metricSettings = Instrumentation.MetricSettings.Value;
-        if (metricSettings.MetricsEnabled)";
-        GenerateInstrumentationForSignal(metricsByIntegrationName, sb, metricsHeader, "metricSettings.EnabledInstrumentations.Contains(MetricInstrumentation");
+        //const string metricsHeader = @"        // Metrics
+        //var metricSettings = Instrumentation.MetricSettings.Value;
+        //if (metricSettings.MetricsEnabled)";
+        //GenerateInstrumentationForSignal(metricsByIntegrationName, sb, metricsHeader, "metricSettings.EnabledInstrumentations.Contains(MetricInstrumentation");
 
         sb.AppendLine(@"        return nativeCallTargetDefinitions.ToArray();
     }

@@ -44,7 +44,7 @@ internal partial class FrameworkDescription
         }
         catch (Exception ex)
         {
-            Log.Error(ex, "Error getting framework description.");
+            Logger.Instance.Error($"Error getting framework description. - {ex.Message}");
         }
 
         return new FrameworkDescription(
@@ -78,7 +78,7 @@ internal partial class FrameworkDescription
         }
         catch (Exception e)
         {
-            Log.Error(e, "Error getting .NET Framework version from Windows Registry");
+            Logger.Instance.Error($"Error getting .NET Framework version from Windows Registry - {e.Message}");
         }
 
         if (productVersion == null)

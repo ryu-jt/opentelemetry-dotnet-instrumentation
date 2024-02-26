@@ -2,14 +2,11 @@
 // SPDX-License-Identifier: Apache-2.0
 
 using System.Reflection;
-using OpenTelemetry.AutoInstrumentation.Logging;
 
 namespace OpenTelemetry.AutoInstrumentation;
 
 internal partial class FrameworkDescription
 {
-    private static readonly IOtelLogger Log = OtelLogging.GetLogger();
-
     private static readonly Assembly RootAssembly = typeof(object).Assembly;
 
     private FrameworkDescription(
@@ -58,7 +55,7 @@ internal partial class FrameworkDescription
         }
         catch (Exception e)
         {
-            Log.Error(e, "Error getting framework version from [AssemblyInformationalVersion]");
+            Logger.Instance.Error($"Error getting framework version from [AssemblyInformationalVersion] - {e.Message}");
         }
 
         if (productVersion == null)
@@ -71,7 +68,7 @@ internal partial class FrameworkDescription
             }
             catch (Exception e)
             {
-                Log.Error(e, "Error getting framework version from [AssemblyFileVersion]");
+                Logger.Instance.Error($"Error getting framework version from [AssemblyFileVersion] - {e.Message}");
             }
         }
 

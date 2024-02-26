@@ -3,25 +3,15 @@
 
 using System.Diagnostics;
 using System.Reflection;
-using OpenTelemetry.AutoInstrumentation.Logging;
 
 namespace OpenTelemetry.AutoInstrumentation.RulesEngine;
 
 internal class OpenTelemetrySdkMinimumVersionRule : Rule
 {
-    private static IOtelLogger logger = OtelLogging.GetLogger("StartupHook");
-
     public OpenTelemetrySdkMinimumVersionRule()
     {
         Name = "OpenTelemetry SDK Validator";
         Description = "Ensure that the OpenTelemetry SDK version is not older than the version used by the Automatic Instrumentation";
-    }
-
-    // This constructor is used for test purpose.
-    protected OpenTelemetrySdkMinimumVersionRule(IOtelLogger otelLogger)
-        : this()
-    {
-        logger = otelLogger;
     }
 
     internal override bool Evaluate()
@@ -43,17 +33,17 @@ internal class OpenTelemetrySdkMinimumVersionRule : Rule
         catch (Exception ex)
         {
             // Exception in evaluation should not throw or crash the process.
-            logger.Information($"Rule Engine: Couldn't evaluate reference to OpenTelemetry Sdk in an app. Exception: {ex}");
+            Logger.Instance.Info($"Rule Engine: Couldn't evaluate reference to OpenTelemetry Sdk in an app. Exception: {ex}");
             return true;
         }
 
         if (oTelPackageVersion != null)
         {
-            logger.Error($"Rule Engine: Application has direct or indirect reference to older version of OpenTelemetry package {oTelPackageVersion}.");
+            Logger.Instance.Error($"Rule Engine: Application has direct or indirect reference to older version of OpenTelemetry package {oTelPackageVersion}.");
             return false;
         }
 
-        logger.Information("Rule Engine: OpenTelemetrySdkMinimumVersionRule evaluation success.");
+        Logger.Instance.Info("Rule Engine: OpenTelemetrySdkMinimumVersionRule evaluation success.");
         return true;
     }
 

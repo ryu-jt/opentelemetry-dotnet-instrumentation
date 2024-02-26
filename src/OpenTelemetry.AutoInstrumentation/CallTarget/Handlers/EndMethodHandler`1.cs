@@ -17,6 +17,8 @@ internal static class EndMethodHandler<TIntegration, TTarget, TReturn>
 
     static EndMethodHandler()
     {
+        Logger.Instance.Debug("EndMethodHandler<TIntegration, TTarget, TReturn>.cctor()");
+
         Type returnType = typeof(TReturn);
         try
         {
@@ -69,13 +71,17 @@ internal static class EndMethodHandler<TIntegration, TTarget, TReturn>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static CallTargetReturn<TReturn?> Invoke(TTarget instance, TReturn? returnValue, Exception exception, in CallTargetState state)
     {
+        Logger.Instance.Debug("EndMethodHandler<TIntegration, TTarget, TReturn>.Invoke()");
+
         if (_continuationGenerator != null)
         {
             returnValue = _continuationGenerator.SetContinuation(instance, returnValue, exception, in state);
 
             // Restore previous scope if there is a continuation
             // This is used to mimic the ExecutionContext copy from the StateMachine
-            Activity.Current = state.PreviousActivity;
+
+            // TODO:
+            //Activity.Current = state.PreviousActivity;
         }
 
         if (_invokeDelegate != null)

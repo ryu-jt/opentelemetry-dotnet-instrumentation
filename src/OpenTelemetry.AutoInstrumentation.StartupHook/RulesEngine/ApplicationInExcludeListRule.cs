@@ -3,14 +3,11 @@
 
 using System.Diagnostics;
 using OpenTelemetry.AutoInstrumentation.Helpers;
-using OpenTelemetry.AutoInstrumentation.Logging;
 
 namespace OpenTelemetry.AutoInstrumentation.RulesEngine;
 
 internal class ApplicationInExcludeListRule : Rule
 {
-    private static readonly IOtelLogger Logger = OtelLogging.GetLogger("StartupHook");
-
     public ApplicationInExcludeListRule()
     {
         Name = "Application is in exclude list validator";
@@ -22,18 +19,18 @@ internal class ApplicationInExcludeListRule : Rule
         var appDomainName = GetAppDomainName();
         if (appDomainName.Equals("dotnet", StringComparison.InvariantCultureIgnoreCase))
         {
-            Logger.Information($"Rule Engine: AppDomain name is dotnet. Skipping initialization.");
+            Logger.Instance.Info($"Rule Engine: AppDomain name is dotnet. Skipping initialization.");
             return false;
         }
 
         var processModuleName = GetProcessModuleName();
         if (GetExcludedApplicationNames().Contains(processModuleName, StringComparer.InvariantCultureIgnoreCase))
         {
-            Logger.Information($"Rule Engine: {processModuleName} is in the exclusion list. Skipping initialization.");
+            Logger.Instance.Info($"Rule Engine: {processModuleName} is in the exclusion list. Skipping initialization.");
             return false;
         }
 
-        Logger.Debug($"Rule Engine: {processModuleName} is not in the exclusion list. ApplicationInExcludeListRule evaluation success.");
+        Logger.Instance.Debug($"Rule Engine: {processModuleName} is not in the exclusion list. ApplicationInExcludeListRule evaluation success.");
         return true;
     }
 
@@ -45,7 +42,7 @@ internal class ApplicationInExcludeListRule : Rule
         }
         catch (Exception ex)
         {
-            Logger.Error($"Error getting Process.MainModule.ModuleName: {ex}");
+            Logger.Instance.Error($"Error getting Process.MainModule.ModuleName: {ex}");
             return string.Empty;
         }
     }
@@ -58,7 +55,7 @@ internal class ApplicationInExcludeListRule : Rule
         }
         catch (Exception ex)
         {
-            Logger.Error($"Error getting AppDomain.CurrentDomain.FriendlyName: {ex}");
+            Logger.Instance.Error($"Error getting AppDomain.CurrentDomain.FriendlyName: {ex}");
             return string.Empty;
         }
     }

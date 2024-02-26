@@ -1,27 +1,16 @@
-// Copyright The OpenTelemetry Authors
-// SPDX-License-Identifier: Apache-2.0
-
 using System.Reflection;
-using OpenTelemetry.AutoInstrumentation.Logging;
+using System.Runtime.InteropServices;
 
 namespace OpenTelemetry.AutoInstrumentation.Loader;
 
-/// <summary>
-/// A class that attempts to load the OpenTelemetry.AutoInstrumentation .NET assembly.
-/// </summary>
 internal partial class Loader
 {
     private static readonly string ManagedProfilerDirectory;
 
-    private static readonly IOtelLogger Logger = OtelLogging.GetLogger("Loader");
-
-    /// <summary>
-    /// Initializes static members of the <see cref="Loader"/> class.
-    /// This method also attempts to load the OpenTelemetry.AutoInstrumentation .NET assembly.
-    /// </summary>
     static Loader()
     {
-        DebugLogs.Instance.Log("Loader begin");
+        string frameworkDescription = RuntimeInformation.FrameworkDescription;
+        Logger.Instance.Debug("Loader begin - .NET version: {frameworkDescription}");
 
         ManagedProfilerDirectory = ResolveManagedProfilerDirectory();
 
@@ -31,8 +20,7 @@ internal partial class Loader
         }
         catch (Exception ex)
         {
-            DebugLogs.Instance.Log($"Unable to register a callback to the CurrentDomain.AssemblyResolve event. {ex}");
-            Logger.Error(ex, "Unable to register a callback to the CurrentDomain.AssemblyResolve event.");
+            Logger.Instance.Error($"Unable to register a callback to the CurrentDomain.AssemblyResolve event. {ex}");
         }
 
         TryLoadManagedAssembly();
@@ -40,8 +28,7 @@ internal partial class Loader
 
     private static void TryLoadManagedAssembly()
     {
-        DebugLogs.Instance.Log("Managed Loader TryLoadManagedAssembly()");
-        Logger.Information("Managed Loader TryLoadManagedAssembly()");
+        Logger.Instance.Info("Managed Loader TryLoadManagedAssembly()");
 
         try
         {
@@ -67,8 +54,7 @@ internal partial class Loader
         }
         catch (Exception ex)
         {
-            DebugLogs.Instance.Log($"Error when loading managed assemblies. {ManagedProfilerDirectory}, {ex}");
-            Logger.Error(ex, "Error when loading managed assemblies. {0}", ex.Message);
+            Logger.Instance.Error($"Error when loading managed assemblies. {ex}");
             throw;
         }
     }
@@ -81,8 +67,7 @@ internal partial class Loader
         }
         catch (Exception ex)
         {
-            DebugLogs.Instance.Log($"Error while loading environment variable {key}. {ex}");
-            Logger.Error(ex, "Error while loading environment variable {0}", key);
+            Logger.Instance.Error($"Error getting store directory location. {ex}");
         }
 
         return null;

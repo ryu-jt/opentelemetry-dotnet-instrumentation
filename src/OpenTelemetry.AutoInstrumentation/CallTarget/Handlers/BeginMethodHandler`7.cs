@@ -15,6 +15,8 @@ internal static class BeginMethodHandler<TIntegration, TTarget, TArg1, TArg2, TA
 
     static BeginMethodHandler()
     {
+        Logger.Instance.Debug("BeginMethodHandler<TIntegration, TTarget, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>.cctor()");
+
         try
         {
             Type tArg1ByRef = typeof(TArg1).IsByRef ? typeof(TArg1) : typeof(TArg1).MakeByRefType();
@@ -48,6 +50,11 @@ internal static class BeginMethodHandler<TIntegration, TTarget, TArg1, TArg2, TA
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static CallTargetState Invoke(TTarget instance, ref TArg1 arg1, ref TArg2 arg2, ref TArg3 arg3, ref TArg4 arg4, ref TArg5 arg5, ref TArg6 arg6, ref TArg7 arg7)
     {
-        return new CallTargetState(Activity.Current, _invokeDelegate(instance, ref arg1, ref arg2, ref arg3, ref arg4, ref arg5, ref arg6, ref arg7));
+        Logger.Instance.Debug("BeginMethodHandler<TIntegration, TTarget, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>.Invoke()");
+
+        // TODO:
+        //return new CallTargetState(Activity.Current, _invokeDelegate(instance, ref arg1, ref arg2, ref arg3, ref arg4, ref arg5, ref arg6, ref arg7));
+
+        return new CallTargetState(null, _invokeDelegate(instance, ref arg1, ref arg2, ref arg3, ref arg4, ref arg5, ref arg6, ref arg7));
     }
 }

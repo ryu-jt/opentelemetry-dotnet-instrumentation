@@ -15,6 +15,8 @@ internal static class BeginMethodHandler<TIntegration, TTarget>
 
     static BeginMethodHandler()
     {
+        Logger.Instance.Debug("BeginMethodHandler<TIntegration, TTarget>.cctor()");
+
         try
         {
             DynamicMethod? dynMethod = IntegrationMapper.CreateBeginMethodDelegate(typeof(TIntegration), typeof(TTarget), Array.Empty<Type>());
@@ -41,6 +43,11 @@ internal static class BeginMethodHandler<TIntegration, TTarget>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static CallTargetState Invoke(TTarget instance)
     {
-        return new CallTargetState(Activity.Current, _invokeDelegate(instance));
+        Logger.Instance.Debug("BeginMethodHandler<TIntegration, TTarget>.Invoke()");
+
+        // TODO:
+        //return new CallTargetState(Activity.Current, _invokeDelegate(instance));
+
+        return new CallTargetState(null, _invokeDelegate(instance));
     }
 }

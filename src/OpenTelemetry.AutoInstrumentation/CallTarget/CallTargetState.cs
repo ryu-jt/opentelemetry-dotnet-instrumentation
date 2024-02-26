@@ -11,8 +11,8 @@ namespace OpenTelemetry.AutoInstrumentation.CallTarget;
 /// </summary>
 public readonly struct CallTargetState
 {
-    private readonly Activity? _previousActivity;
-    private readonly Activity? _activity;
+    private readonly object? _previousActivity;
+    private readonly object? _activity;
     private readonly object? _state;
     private readonly DateTimeOffset? _startTime;
 
@@ -20,7 +20,7 @@ public readonly struct CallTargetState
     /// Initializes a new instance of the <see cref="CallTargetState"/> struct.
     /// </summary>
     /// <param name="activity">Activity instance</param>
-    public CallTargetState(Activity activity)
+    public CallTargetState(object activity)
     {
         _previousActivity = null;
         _activity = activity;
@@ -33,7 +33,7 @@ public readonly struct CallTargetState
     /// </summary>
     /// <param name="activity">Activity instance</param>
     /// <param name="state">Object state instance</param>
-    public CallTargetState(Activity? activity, object? state)
+    public CallTargetState(object? activity, object? state)
     {
         _previousActivity = null;
         _activity = activity;
@@ -47,7 +47,7 @@ public readonly struct CallTargetState
     /// <param name="activity">Activity instance</param>
     /// <param name="state">Object state instance</param>
     /// <param name="startTime">The intended start time of the activity, intended for activities created in the OnMethodEnd handler</param>
-    public CallTargetState(Activity? activity, object? state, DateTimeOffset? startTime)
+    public CallTargetState(object? activity, object? state, DateTimeOffset? startTime)
     {
         _previousActivity = null;
         _activity = activity;
@@ -55,7 +55,7 @@ public readonly struct CallTargetState
         _startTime = startTime;
     }
 
-    internal CallTargetState(Activity? previousActivity, CallTargetState state)
+    internal CallTargetState(object? previousActivity, CallTargetState state)
     {
         _previousActivity = previousActivity;
         _activity = state._activity;
@@ -66,7 +66,7 @@ public readonly struct CallTargetState
     /// <summary>
     /// Gets the CallTarget BeginMethod activity
     /// </summary>
-    public Activity? Activity => _activity;
+    public object? Activity => _activity;
 
     /// <summary>
     /// Gets the CallTarget BeginMethod state
@@ -78,7 +78,7 @@ public readonly struct CallTargetState
     /// </summary>
     public DateTimeOffset? StartTime => _startTime;
 
-    internal Activity? PreviousActivity => _previousActivity;
+    internal object? PreviousActivity => _previousActivity;
 
     /// <summary>
     /// Gets the default call target state (used by the native side to initialize the locals)

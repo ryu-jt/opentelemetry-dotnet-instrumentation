@@ -11,9 +11,15 @@ internal static class NativeMethods
 
     public static void AddInstrumentations(string id, NativeCallTargetDefinition[] methodArrays)
     {
+        Logger.Instance.Debug("---> AddInstrumentations");
+
         if (methodArrays is null || methodArrays.Length == 0)
         {
             return;
+        }
+
+        foreach (var method in methodArrays) {
+            Logger.Instance.Debug($" * {method.TargetType}.{method.TargetMethod}");
         }
 
         if (IsWindows)
@@ -28,9 +34,16 @@ internal static class NativeMethods
 
     public static void AddDerivedInstrumentations(string id, NativeCallTargetDefinition[] methodArrays)
     {
+        Logger.Instance.Debug("---> AddDerivedInstrumentations");
+
         if (methodArrays is null || methodArrays.Length == 0)
         {
             return;
+        }
+
+        foreach (var method in methodArrays)
+        {
+            Logger.Instance.Debug($" * {method.TargetType}.{method.TargetMethod}");
         }
 
         if (IsWindows)
@@ -46,6 +59,8 @@ internal static class NativeMethods
 #if NET6_0_OR_GREATER
     public static void ConfigureNativeContinuousProfiler(bool threadSamplingEnabled, uint threadSamplingInterval, bool allocationSamplingEnabled, uint maxMemorySamplesPerMinute)
     {
+        Logger.Instance.Debug("---> ConfigureNativeContinuousProfiler");
+
         if (IsWindows)
         {
             Windows.ConfigureContinuousProfiler(threadSamplingEnabled, threadSamplingInterval, allocationSamplingEnabled, maxMemorySamplesPerMinute);
@@ -58,16 +73,22 @@ internal static class NativeMethods
 
     public static int ContinuousProfilerReadThreadSamples(int len, byte[] buf)
     {
+        Logger.Instance.Debug("---> ContinuousProfilerReadThreadSamples");
+
         return IsWindows ? Windows.ContinuousProfilerReadThreadSamples(len, buf) : NonWindows.ContinuousProfilerReadThreadSamples(len, buf);
     }
 
     public static int ContinuousProfilerReadAllocationSamples(int len, byte[] buf)
     {
+        Logger.Instance.Debug("---> ContinuousProfilerReadAllocationSamples");
+
         return IsWindows ? Windows.ContinuousProfilerReadAllocationSamples(len, buf) : NonWindows.ContinuousProfilerReadAllocationSamples(len, buf);
     }
 
     public static void ContinuousProfilerSetNativeContext(ulong traceIdHigh, ulong traceIdLow, ulong spanId, int managedThreadId)
     {
+        Logger.Instance.Debug("---> ContinuousProfilerSetNativeContext");
+
         if (IsWindows)
         {
             Windows.ContinuousProfilerSetNativeContext(traceIdHigh, traceIdLow, spanId, managedThreadId);

@@ -1,16 +1,11 @@
-// Copyright The OpenTelemetry Authors
-// SPDX-License-Identifier: Apache-2.0
-
 using System.Diagnostics;
 using System.Reflection;
-using OpenTelemetry.AutoInstrumentation.Logging;
 
 namespace OpenTelemetry.AutoInstrumentation.RulesEngine;
 
 internal class RuntimeStoreDiagnosticRule : Rule
 {
     private const string RuntimeStoreEnvironmentVariable = "DOTNET_SHARED_STORE";
-    private static readonly IOtelLogger Logger = OtelLogging.GetLogger("StartupHook");
 
     public RuntimeStoreDiagnosticRule()
     {
@@ -25,7 +20,7 @@ internal class RuntimeStoreDiagnosticRule : Rule
             // Skip rule evaluation if the application is running in self-contained mode.
             if (IsSelfContained())
             {
-                Logger.Debug("Rule Engine: Skipping rule evaluation for self-contained application.");
+                Logger.Instance.Debug("Rule Engine: Skipping rule evaluation for self-contained application.");
                 return true;
             }
 
@@ -33,7 +28,7 @@ internal class RuntimeStoreDiagnosticRule : Rule
             if (configuredStoreDirectory == null)
             {
                 // Store location not found, skip rule evaluation
-                Logger.Debug("Rule Engine: Skipping rule evaluation as runtime store location is not found.");
+                Logger.Instance.Debug("Rule Engine: Skipping rule evaluation as runtime store location is not found.");
                 return true;
             }
 
@@ -50,7 +45,7 @@ internal class RuntimeStoreDiagnosticRule : Rule
                 }
                 catch (Exception ex)
                 {
-                    Logger.Warning(ex, $"Rule Engine: Assembly load failed. Skipping rule evaluation for assembly - {assemblyName}");
+                    Logger.Instance.Warning($"Rule Engine: Assembly load failed. Skipping rule evaluation for assembly - {assemblyName} {ex}");
                     continue;
                 }
 
@@ -61,7 +56,7 @@ internal class RuntimeStoreDiagnosticRule : Rule
                 {
                     // Special case to handle runtime store version 3.1.x.x package references in app.
                     // Skip rule evaluation for assemblies with version 3.1.x.x.
-                    Logger.Debug($"Rule Engine: Skipping rule evaluation for runtime store assembly {appInstrumentationFileVersionInfo.FileName} with version {appInstrumentationFileVersion}.");
+                    Logger.Instance.Debug($"Rule Engine: Skipping rule evaluation for runtime store assembly {appInstrumentationFileVersionInfo.FileName} with version {appInstrumentationFileVersion}.");
                     continue;
                 }
 
@@ -70,18 +65,18 @@ internal class RuntimeStoreDiagnosticRule : Rule
 
                 if (appInstrumentationFileVersion < runTimeStoreFileVersion)
                 {
-                    Logger.Warning($"Rule Engine: Application has direct or indirect reference to lower version of runtime store assembly {runTimeStoreFileVersionInfo.FileName} - {appInstrumentationFileVersion}. ");
+                    Logger.Instance.Warning($"Rule Engine: Application has direct or indirect reference to lower version of runtime store assembly {runTimeStoreFileVersionInfo.FileName} - {appInstrumentationFileVersion}. ");
                 }
                 else
                 {
-                    Logger.Debug($"Rule Engine: Runtime store assembly {runTimeStoreFileVersionInfo.FileName} is validated successfully.");
+                    Logger.Instance.Debug($"Rule Engine: Runtime store assembly {runTimeStoreFileVersionInfo.FileName} is validated successfully.");
                 }
             }
         }
         catch (Exception ex)
         {
             // Exception in rule evaluation should not impact the result of the rule.
-            Logger.Warning(ex, "Rule Engine: Couldn't evaluate reference to runtime store assemblies in an app.");
+            Logger.Instance.Warning($"Rule Engine: Couldn't evaluate reference to runtime store assemblies in an app. {ex}");
         }
 
         // This a diagnostic rule, so we always return true.
@@ -96,14 +91,14 @@ internal class RuntimeStoreDiagnosticRule : Rule
             // Skip rule evaluation if the store directory is not configured.
             if (storeDirectory == null)
             {
-                Logger.Debug($"Rule Engine: {RuntimeStoreEnvironmentVariable} environment variable not found. Skipping rule evaluation.");
+                Logger.Instance.Debug($"Rule Engine: {RuntimeStoreEnvironmentVariable} environment variable not found. Skipping rule evaluation.");
                 return null;
             }
 
             // Check if the store directory exists
             if (!Directory.Exists(storeDirectory))
             {
-                Logger.Debug($"Rule Engine: Runtime store directory not found at {storeDirectory}. Skipping rule evaluation.");
+                Logger.Instance.Debug($"Rule Engine: Runtime store directory not found at {storeDirectory}. Skipping rule evaluation.");
                 return null;
             }
 
@@ -115,7 +110,7 @@ internal class RuntimeStoreDiagnosticRule : Rule
         }
         catch (Exception ex)
         {
-            Logger.Warning(ex, "Error getting store directory location");
+            Logger.Instance.Warning($"Error getting store directory location. {ex}");
             throw;
         }
     }

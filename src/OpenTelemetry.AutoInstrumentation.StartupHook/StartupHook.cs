@@ -2,17 +2,12 @@
 // SPDX-License-Identifier: Apache-2.0
 
 using System.Reflection;
-using OpenTelemetry.AutoInstrumentation.Configurations;
-using OpenTelemetry.AutoInstrumentation.Logging;
-using OpenTelemetry.AutoInstrumentation.RulesEngine;
 
 /// <summary>
 /// Dotnet StartupHook
 /// </summary>
 internal class StartupHook
 {
-    private static readonly IOtelLogger Logger = OtelLogging.GetLogger("StartupHook");
-
     // This property must be initialized before any rule is evaluated since it may be used during rule evaluation.
     internal static string? LoaderAssemblyLocation { get; set; }
 
@@ -22,21 +17,18 @@ internal class StartupHook
     /// </summary>
     public static void Initialize()
     {
-        bool.TryParse(Environment.GetEnvironmentVariable(ConfigurationKeys.FailFast), out var failFast);
-
         string loaderFilePath = string.Empty;
         try
         {
             LoaderAssemblyLocation = GetLoaderAssemblyLocation();
 
-            var ruleEngine = new RuleEngine();
-            if (!ruleEngine.ValidateRules())
-            {
-                throw new Exception("Rule Engine Failure: One or more rules failed validation. Automatic Instrumentation won't be loaded.");
-            }
+            // var ruleEngine = new RuleEngine();
+            // if (!ruleEngine.ValidateRules())
+            // {
+            //     throw new Exception("Rule Engine Failure: One or more rules failed validation. Automatic Instrumentation won't be loaded.");
+            // }
 
-            DebugLogs.Instance.Log("Initialization.");
-            Logger.Information("Initialization.");
+            Logger.Instance.Info("Initialization.");
 
             // Creating an instance of OpenTelemetry.AutoInstrumentation.Loader.Startup
             // will initialize Instrumentation through its static constructor.
@@ -45,25 +37,20 @@ internal class StartupHook
             var loaderInstance = loaderAssembly.CreateInstance("OpenTelemetry.AutoInstrumentation.Loader.Loader");
             if (loaderInstance is null)
             {
-                if (failFast)
-                {
-                    throw new Exception("StartupHook failed to create an instance of the Loader");
-                }
+                // TODO:
+                throw new Exception("StartupHook failed to create an instance of the Loader");
             }
             else
             {
-                DebugLogs.Instance.Log("StartupHook initialized successfully!");
-                Logger.Information("StartupHook initialized successfully!");
+                Logger.Instance.Info("StartupHook initialized successfully!");
             }
         }
         catch (Exception ex)
         {
-            DebugLogs.Instance.Log($"Error in StartupHook initialization: LoaderFolderLocation: {loaderFilePath}, {ex}");
-            Logger.Error(ex, $"Error in StartupHook initialization: LoaderFolderLocation: {LoaderAssemblyLocation}");
-            if (failFast)
-            {
-                throw;
-            }
+            Logger.Instance.Error($"Error in StartupHook initialization: LoaderFolderLocation: {LoaderAssemblyLocation} {ex}");
+
+            // TODO:
+            throw;
         }
     }
 
@@ -85,8 +72,7 @@ internal class StartupHook
         }
         catch (Exception ex)
         {
-            DebugLogs.Instance.Log($"Error getting loader directory location: {ex}");
-            Logger.Error($"Error getting loader directory location: {ex}");
+            Logger.Instance.Error($"Error getting loader directory location: {ex}");
             throw;
         }
     }

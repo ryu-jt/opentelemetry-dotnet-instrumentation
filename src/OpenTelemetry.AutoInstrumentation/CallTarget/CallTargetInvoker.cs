@@ -24,6 +24,8 @@ public static class CallTargetInvoker
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static CallTargetState BeginMethod<TIntegration, TTarget>(TTarget instance)
     {
+        Logger.Instance.Debug("CallTargetInvoker.BeginMethod<TIntegration, TTarget>()");
+
         if (IntegrationOptions<TIntegration, TTarget>.IsIntegrationEnabled)
         {
             return BeginMethodHandler<TIntegration, TTarget>.Invoke(instance);
@@ -44,6 +46,8 @@ public static class CallTargetInvoker
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static CallTargetState BeginMethod<TIntegration, TTarget, TArg1>(TTarget instance, ref TArg1 arg1)
     {
+        Logger.Instance.Debug("CallTargetInvoker.BeginMethod<TIntegration, TTarget, TArg1>()");
+
         if (IntegrationOptions<TIntegration, TTarget>.IsIntegrationEnabled)
         {
             return BeginMethodHandler<TIntegration, TTarget, TArg1>.Invoke(instance, ref arg1);
@@ -66,6 +70,8 @@ public static class CallTargetInvoker
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static CallTargetState BeginMethod<TIntegration, TTarget, TArg1, TArg2>(TTarget instance, ref TArg1 arg1, ref TArg2 arg2)
     {
+        Logger.Instance.Debug("CallTargetInvoker.BeginMethod<TIntegration, TTarget, TArg1, TArg2>()");
+
         if (IntegrationOptions<TIntegration, TTarget>.IsIntegrationEnabled)
         {
             return BeginMethodHandler<TIntegration, TTarget, TArg1, TArg2>.Invoke(instance, ref arg1, ref arg2);
@@ -90,6 +96,8 @@ public static class CallTargetInvoker
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static CallTargetState BeginMethod<TIntegration, TTarget, TArg1, TArg2, TArg3>(TTarget instance, ref TArg1 arg1, ref TArg2 arg2, ref TArg3 arg3)
     {
+        Logger.Instance.Debug("CallTargetInvoker.BeginMethod<TIntegration, TTarget, TArg1, TArg2, TArg3>()");
+
         if (IntegrationOptions<TIntegration, TTarget>.IsIntegrationEnabled)
         {
             return BeginMethodHandler<TIntegration, TTarget, TArg1, TArg2, TArg3>.Invoke(instance, ref arg1, ref arg2, ref arg3);
@@ -116,6 +124,8 @@ public static class CallTargetInvoker
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static CallTargetState BeginMethod<TIntegration, TTarget, TArg1, TArg2, TArg3, TArg4>(TTarget instance, ref TArg1 arg1, ref TArg2 arg2, ref TArg3 arg3, ref TArg4 arg4)
     {
+        Logger.Instance.Debug("CallTargetInvoker.BeginMethod<TIntegration, TTarget, TArg1, TArg2, TArg3, TArg4>()");
+
         if (IntegrationOptions<TIntegration, TTarget>.IsIntegrationEnabled)
         {
             return BeginMethodHandler<TIntegration, TTarget, TArg1, TArg2, TArg3, TArg4>.Invoke(instance, ref arg1, ref arg2, ref arg3, ref arg4);
@@ -144,6 +154,8 @@ public static class CallTargetInvoker
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static CallTargetState BeginMethod<TIntegration, TTarget, TArg1, TArg2, TArg3, TArg4, TArg5>(TTarget instance, ref TArg1 arg1, ref TArg2 arg2, ref TArg3 arg3, ref TArg4 arg4, ref TArg5 arg5)
     {
+        Logger.Instance.Debug("CallTargetInvoker.BeginMethod<TIntegration, TTarget, TArg1, TArg2, TArg3, TArg4, TArg5>()");
+
         if (IntegrationOptions<TIntegration, TTarget>.IsIntegrationEnabled)
         {
             return BeginMethodHandler<TIntegration, TTarget, TArg1, TArg2, TArg3, TArg4, TArg5>.Invoke(instance, ref arg1, ref arg2, ref arg3, ref arg4, ref arg5);
@@ -174,6 +186,8 @@ public static class CallTargetInvoker
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static CallTargetState BeginMethod<TIntegration, TTarget, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>(TTarget instance, ref TArg1 arg1, ref TArg2 arg2, ref TArg3 arg3, ref TArg4 arg4, ref TArg5 arg5, ref TArg6 arg6)
     {
+        Logger.Instance.Debug("CallTargetInvoker.BeginMethod<TIntegration, TTarget, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>()");
+
         if (IntegrationOptions<TIntegration, TTarget>.IsIntegrationEnabled)
         {
             return BeginMethodHandler<TIntegration, TTarget, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>.Invoke(instance, ref arg1, ref arg2, ref arg3, ref arg4, ref arg5, ref arg6);
@@ -206,6 +220,8 @@ public static class CallTargetInvoker
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static CallTargetState BeginMethod<TIntegration, TTarget, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>(TTarget instance, ref TArg1 arg1, ref TArg2 arg2, ref TArg3 arg3, ref TArg4 arg4, ref TArg5 arg5, ref TArg6 arg6, ref TArg7 arg7)
     {
+        Logger.Instance.Debug("CallTargetInvoker.BeginMethod<TIntegration, TTarget, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>()");
+
         if (IntegrationOptions<TIntegration, TTarget>.IsIntegrationEnabled)
         {
             return BeginMethodHandler<TIntegration, TTarget, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7>.Invoke(instance, ref arg1, ref arg2, ref arg3, ref arg4, ref arg5, ref arg6, ref arg7);
@@ -240,6 +256,8 @@ public static class CallTargetInvoker
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static CallTargetState BeginMethod<TIntegration, TTarget, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>(TTarget instance, ref TArg1 arg1, ref TArg2 arg2, ref TArg3 arg3, ref TArg4 arg4, ref TArg5 arg5, ref TArg6 arg6, ref TArg7 arg7, ref TArg8 arg8)
     {
+        Logger.Instance.Debug("CallTargetInvoker.BeginMethod<TIntegration, TTarget, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>()");
+
         if (IntegrationOptions<TIntegration, TTarget>.IsIntegrationEnabled)
         {
             return BeginMethodHandler<TIntegration, TTarget, TArg1, TArg2, TArg3, TArg4, TArg5, TArg6, TArg7, TArg8>.Invoke(instance, ref arg1, ref arg2, ref arg3, ref arg4, ref arg5, ref arg6, ref arg7, ref arg8);
@@ -259,6 +277,8 @@ public static class CallTargetInvoker
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static CallTargetState BeginMethod<TIntegration, TTarget>(TTarget instance, object[] arguments)
     {
+        Logger.Instance.Debug("CallTargetInvoker.BeginMethod<TIntegration, TTarget>()");
+
         if (IntegrationOptions<TIntegration, TTarget>.IsIntegrationEnabled)
         {
             return BeginMethodSlowHandler<TIntegration, TTarget>.Invoke(instance, arguments);
@@ -279,6 +299,8 @@ public static class CallTargetInvoker
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static CallTargetReturn EndMethod<TIntegration, TTarget>(TTarget instance, Exception exception, in CallTargetState state)
     {
+        Logger.Instance.Debug("CallTargetInvoker.EndMethod<TIntegration, TTarget>()");
+
         if (IntegrationOptions<TIntegration, TTarget>.IsIntegrationEnabled)
         {
             return EndMethodHandler<TIntegration, TTarget>.Invoke(instance, exception, in state);
@@ -301,6 +323,8 @@ public static class CallTargetInvoker
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static CallTargetReturn<TReturn?> EndMethod<TIntegration, TTarget, TReturn>(TTarget instance, TReturn returnValue, Exception exception, in CallTargetState state)
     {
+        Logger.Instance.Debug("CallTargetInvoker.EndMethod<TIntegration, TTarget, TReturn>()");
+
         if (IntegrationOptions<TIntegration, TTarget>.IsIntegrationEnabled)
         {
             return EndMethodHandler<TIntegration, TTarget, TReturn>.Invoke(instance, returnValue, exception, in state);
@@ -318,6 +342,8 @@ public static class CallTargetInvoker
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void LogException<TIntegration, TTarget>(Exception exception)
     {
+        Logger.Instance.Debug("CallTargetInvoker.LogException<TIntegration, TTarget>()");
+
         IntegrationOptions<TIntegration, TTarget>.LogException(exception);
     }
 

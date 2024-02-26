@@ -12,6 +12,8 @@ internal static class EndMethodHandler<TIntegration, TTarget>
 
     static EndMethodHandler()
     {
+        Logger.Instance.Debug("EndMethodHandler<TIntegration, TTarget>.cctor()");
+
         try
         {
             DynamicMethod? dynMethod = IntegrationMapper.CreateEndMethodDelegate(typeof(TIntegration), typeof(TTarget));
@@ -38,6 +40,8 @@ internal static class EndMethodHandler<TIntegration, TTarget>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static CallTargetReturn Invoke(TTarget instance, Exception exception, in CallTargetState state)
     {
+        Logger.Instance.Debug("EndMethodHandler<TIntegration, TTarget>.Invoke()");
+
         return _invokeDelegate(instance, exception, in state);
     }
 }
