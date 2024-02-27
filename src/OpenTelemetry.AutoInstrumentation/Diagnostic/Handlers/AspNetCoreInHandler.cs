@@ -1,7 +1,5 @@
 using System;
 using System.Diagnostics;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Filters;
 using WhaTap.Trace;
 
 namespace OpenTelemetry.AutoInstrumentation.Diagnostic;
@@ -74,25 +72,20 @@ internal class AspNetCoreInHandler : IDiagnosticHandler
     {
         try
         {
-            if (payload is DefaultHttpContext context)
-            {
-                var actionName = context.Request.Path.Value;
-                var host = context.Request.Host.Value;
-                var httpMethod = context.Request.Method;
-                var url = context.Request.Path.Value;
-                Logger.Instance.Debug($"Handling HttpRequestIn.Start: Action={actionName}, Method={httpMethod}");
+            dynamic context = payload;
 
-                var step = new Step(null);
-                step.Host = host;
-                step.HttpMethod = httpMethod;
-                step.Url = url;
+            var actionName = context.Request.Path.Value;
+            var host = context.Request.Host.Value;
+            var httpMethod = context.Request.Method;
+            var url = context.Request.Path.Value;
+            Logger.Instance.Debug($"Handling HttpRequestIn.Start: Action={actionName}, Method={httpMethod}");
 
-                return step;
-            }
-            else
-            {
-                throw new Exception("payload is not DefaultHttpContext context");
-            }
+            var step = new Step(null);
+            step.Host = host;
+            step.HttpMethod = httpMethod;
+            step.Url = url;
+
+            return step;
         }
         catch (Exception ex)
         {

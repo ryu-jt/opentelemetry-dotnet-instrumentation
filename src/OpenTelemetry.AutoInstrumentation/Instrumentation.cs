@@ -20,7 +20,7 @@ internal static class Instrumentation
         DiagnosticManager.Instance.Listening();
 #endif
 
-        //RegisterBytecodeInstrumentations(InstrumentationDefinitions.GetAllDefinitions());
+        RegisterBytecodeInstrumentations(InstrumentationDefinitions.GetAllDefinitions());
 
         //try
         //{
