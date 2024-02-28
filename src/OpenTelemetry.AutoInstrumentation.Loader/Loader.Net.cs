@@ -22,6 +22,11 @@ internal partial class Loader
         var assemblyName = new AssemblyName(args.Name);
         string assemblyPath = Path.Combine(ManagedProfilerDirectory, $"{assemblyName.Name}.dll");
 
+        if (args.RequestingAssembly == null)
+        {
+            return null;
+        }   
+
         if (File.Exists(assemblyPath))
         {
             return DependencyLoadContext.LoadFromAssemblyPath(assemblyPath);

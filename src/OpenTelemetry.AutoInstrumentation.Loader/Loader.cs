@@ -1,5 +1,4 @@
 using System.Reflection;
-using System.Runtime.InteropServices;
 
 namespace OpenTelemetry.AutoInstrumentation.Loader;
 
@@ -9,9 +8,6 @@ internal partial class Loader
 
     static Loader()
     {
-        string frameworkDescription = RuntimeInformation.FrameworkDescription;
-        Logger.Instance.Debug("Loader begin - .NET version: {frameworkDescription}");
-
         ManagedProfilerDirectory = ResolveManagedProfilerDirectory();
 
         try
@@ -28,8 +24,6 @@ internal partial class Loader
 
     private static void TryLoadManagedAssembly()
     {
-        Logger.Instance.Info("Managed Loader TryLoadManagedAssembly()");
-
         try
         {
             var assembly = Assembly.Load("OpenTelemetry.AutoInstrumentation");

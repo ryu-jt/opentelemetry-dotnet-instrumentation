@@ -8,7 +8,7 @@
     <!-- Hide warnings for EOL .NET Core targets (e.g. netcoreapp2.0) -->
     <CheckEolTargetFramework>false</CheckEolTargetFramework>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <Compile Include="..\OpenTelemetry.AutoInstrumentation\Utils\Logger.cs">
       <Link>Logger.cs</Link>
