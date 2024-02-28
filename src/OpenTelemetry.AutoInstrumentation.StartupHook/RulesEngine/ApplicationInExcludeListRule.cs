@@ -71,7 +71,7 @@ internal class ApplicationInExcludeListRule : Rule
             return excludedProcesses;
         }
 
-        foreach (var processName in environmentValue.Split(Constants.ConfigurationValues.Separator))
+        foreach (var processName in environmentValue.Split(','))
         {
             if (!string.IsNullOrWhiteSpace(processName))
             {

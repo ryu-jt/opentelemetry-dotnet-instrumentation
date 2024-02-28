@@ -1,11 +1,8 @@
-// Copyright The OpenTelemetry Authors
-// SPDX-License-Identifier: Apache-2.0
-
 using System.Reflection;
 using System.Runtime.InteropServices;
 using OpenTelemetry.AutoInstrumentation.Helpers;
 
-using static OpenTelemetry.AutoInstrumentation.Constants.EnvironmentVariables;
+using static Constants.EnvironmentVariables;
 
 namespace OpenTelemetry.AutoInstrumentation;
 

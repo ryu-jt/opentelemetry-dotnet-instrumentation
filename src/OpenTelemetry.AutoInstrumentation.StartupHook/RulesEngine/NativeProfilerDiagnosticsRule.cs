@@ -1,6 +1,6 @@
 using OpenTelemetry.AutoInstrumentation.Helpers;
 
-using static OpenTelemetry.AutoInstrumentation.Constants.EnvironmentVariables;
+using static Constants.EnvironmentVariables;
 
 namespace OpenTelemetry.AutoInstrumentation.RulesEngine;
 

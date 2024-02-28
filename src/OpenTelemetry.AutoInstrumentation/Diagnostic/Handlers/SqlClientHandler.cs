@@ -12,19 +12,20 @@ internal class SqlClientHandler : IDiagnosticHandler
         {
             switch (eventName)
             {
+                case "System.Data.SqlClient.WriteCommandBefore":
                 case "Microsoft.Data.SqlClient.WriteCommandBefore":
                     HandleCommandBefore(payload);
                     break;
+
+                case "System.Data.SqlClient.WriteCommandAfter":
                 case "Microsoft.Data.SqlClient.WriteCommandAfter":
                     HandleCommandAfter(payload);
                     break;
+
+                case "System.Data.SqlClient.WriteCommandError":
                 case "Microsoft.Data.SqlClient.WriteCommandError":
                     HandleCommandError(payload);
                     break;
-
-                    //case "System.Data.SqlClient.WriteCommandBefore":
-                    //case "System.Data.SqlClient.WriteCommandAfter":
-                    //case "System.Data.SqlClient.WriteCommandError":
             }
         }
         catch (Exception ex)
@@ -41,7 +42,7 @@ internal class SqlClientHandler : IDiagnosticHandler
 
     private void HandleCommandAfter(object payload)
     {
-        var step = ActiveTransaction.Instance.Transaction.CurrentStep;
+        var step = ActiveTransaction.Instance.Transaction?.CurrentStep ?? null;
         TraceControl.Instance.EndSection(step);
     }
 
