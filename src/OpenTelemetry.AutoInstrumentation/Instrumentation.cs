@@ -22,23 +22,23 @@ internal static class Instrumentation
 
         RegisterBytecodeInstrumentations(InstrumentationDefinitions.GetAllDefinitions());
 
-        //try
-        //{
-        //    Logger.Instance.Debug("Sending CallTarget derived integration definitions to native library.");
+        try
+        {
+            Logger.Instance.Debug("Sending CallTarget derived integration definitions to native library.");
 
-        //    var payload = InstrumentationDefinitions.GetDerivedDefinitions();
-        //    NativeMethods.AddDerivedInstrumentations(payload.DefinitionsId, payload.Definitions);
-        //    foreach (var def in payload.Definitions)
-        //    {
-        //        def.Dispose();
-        //    }
+            var payload = InstrumentationDefinitions.GetDerivedDefinitions();
+            NativeMethods.AddDerivedInstrumentations(payload.DefinitionsId, payload.Definitions);
+            foreach (var def in payload.Definitions)
+            {
+                def.Dispose();
+            }
 
-        //    Logger.Instance.Info($"The profiler has been initialized with {payload.Definitions.Length} derived definitions.");
-        //}
-        //catch (Exception ex)
-        //{
-        //    Logger.Instance.Error(ex.Message);
-        //}
+            Logger.Instance.Info($"The profiler has been initialized with {payload.Definitions.Length} derived definitions.");
+        }
+        catch (Exception ex)
+        {
+            Logger.Instance.Error(ex.Message);
+        }
     }
 
     private static void RegisterBytecodeInstrumentations(InstrumentationDefinitions.Payload payload)
