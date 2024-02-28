@@ -15,9 +15,6 @@
     <Compile Include="..\OpenTelemetry.AutoInstrumentation\Utils\UDPSocket.cs">
       <Link>UDPSocket.cs</Link>
     </Compile>
-    <Compile Include="..\OpenTelemetry.AutoInstrumentation\AutoInstrumentationEventSource.cs">
-      <Link>AutoInstrumentationEventSource.cs</Link>
-    </Compile>
   </ItemGroup>
 
 </Project>
